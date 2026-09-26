@@ -4,9 +4,11 @@ require_once __DIR__ . '/../config/db.php';
 
 $q = trim($_GET['q'] ?? '');
 if ($q !== '') {
-    $sql = "SELECT * FROM products WHERE name LIKE :q OR category LIKE :q ORDER BY id DESC";
+    // Menggunakan tanda tanya (?) untuk setiap bidang agar kompatibel di semua driver PDO
+    $sql = "SELECT * FROM products WHERE name LIKE ? OR category LIKE ? OR colors LIKE ? OR description LIKE ? ORDER BY id DESC";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['q' => "%$q%"]);
+    $searchTerm = "%$q%";
+    $stmt->execute([$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
 } else {
     $stmt = $pdo->query("SELECT * FROM products ORDER BY id DESC");
 }
